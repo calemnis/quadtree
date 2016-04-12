@@ -1,0 +1,61 @@
+
+	//priority_queue <Rectangle*, vector<Rectangle*>, CompareRect> RectsByPriority;
+	//priority_queue <Point2D, vector<Point2D>, ComparePointsD> PointsByPriority;
+
+	set <Rectangle*, CompareRect> RectsByPriority;
+	set <Point2D, ComparePointsD> PointsByPriority;
+
+
+	vector <Point2D> nearest_elements;
+	Rectangle* r = root;
+
+	//Kezdetben a RectsByPriority-be bekerül a root.
+	RectsByPriority.insert(r);
+
+	while(!RectsByPriority.empty())
+	{
+		Rectangle* e = RectsByPriority.top();
+
+		while (RectsByPriority.top()->points.empty())
+		{
+			RectsByPriority.pop();
+			e = RectsByPriority.top();
+		}
+
+
+		if (e->IsLeaf())
+		{
+			for (auto p: e->points)
+				{
+					p.DistanceOfTwo(a);
+					PointsByPriority.insert(p);
+				}
+			RectsByPriority.pop();
+		}
+		else if (!e->IsLeaf())
+		{
+			Rectangle* h = e;
+			RectsByPriority.pop();
+			h->nw->DistToPoint(a);
+			RectsByPriority.insert(h->nw);
+			h->ne->DistToPoint(a);
+			RectsByPriority.insert(h->ne);
+			h->sw->DistToPoint(a);
+			RectsByPriority.insert(h->sw);
+			h->se->DistToPoint(a);
+			RectsByPriority.insert(h->se);
+		}
+
+		if (PointsByPriority.size() >= k && RectsByPriority.top()->point_distance > PointsByPriority.top().ptopdistance)
+		{
+			break;
+		}
+
+	}
+	for (unsigned int i = 0; i < k; i++)
+	{
+		nearest_elements.push_back(PointsByPriority.top());
+		PointsByPriority.pop();
+	}
+
+	return nearest_elements;
